@@ -6,9 +6,9 @@ import java.awt.*;
 // All Global variables defined in global variables class.
 class globalVariables
 {
-	public static Vector dependencies0 = new Vector();
+	public static Vector<Integer> dependencies0 = new Vector<Integer>();
 	public static Vector<Vector<Integer>> dependencies1 = new Vector<Vector<Integer>>();
-	public static Vector inputDependency0 = new Vector();
+	public static Vector<Integer> inputDependency0 = new Vector<Integer>();
 	public static Vector<Vector<Integer>> inputDependency1 = new Vector<Vector<Integer>>();
 	public static int n,i,fd,x,flag,j,y,length,k, nf=1,maxNF=1,maxNFindex;
 	public static int[][] visited = new int[100][100];
@@ -16,7 +16,7 @@ class globalVariables
 	public static Vector<String> fdstring = new Vector<String>();
 	public static char[] input = new char[10];
 	public static String fdep = new String();
-	public static Vector<Integer> candidateKeys = new Vector();
+	public static Vector<Integer> candidateKeys = new Vector<Integer>();
 	public static int location;
 }
 // class Containing all Methods
@@ -88,7 +88,7 @@ public
 	    String cKeystr = new String(cKey);
 	    globalVariables.fdstring.add(cKeystr);
 	    z=globalVariables.dependencies0.size();
-	    Vector<Integer> temp = new Vector();
+	    Vector<Integer> temp = new Vector<Integer>();
 	    globalVariables.inputDependency1.add(temp);
 	    globalVariables.inputDependency0.add(z);
 	    for(i=0;i< globalVariables.n;i++)
@@ -491,6 +491,7 @@ public class Module1
 	        try
 			{
 				globalVariables.fdep = scan.nextLine();
+                                //System.out.println(globalVariables.fdep);
 				if(globalVariables.fdep.length()<3)
 					throw new WrongInputFormatException();
 
@@ -600,19 +601,27 @@ public class Module1
 	    {
 	        System.out.println("      "+globalVariables.fdstring.get(globalVariables.candidateKeys.get(i)) );
 	    }
-	    func.check2NF();
-	    System.out.println("The highest normal form of this relation is :"+globalVariables.maxNF+" at index "+globalVariables.maxNFindex);
-	    switch(globalVariables.maxNF)
+	    if(globalVariables.n<=2)
 	    {
-	        case 1: func.decompose2NF();
-	                break;
-	        case 2: func.decompose3NF(globalVariables.maxNFindex);
-	                break;
-	        case 3: func.decomposeBCNF(globalVariables.maxNFindex);
-	                break;
-	        default:System.out.println("The relation is already in BCNF form."); 
-	                break;
-
+	    	System.out.println("The highest normal form of this relation is : 4");
+	    	System.out.println("The relation is already in BCNF form.");
 	    }
+	    else
+	    {
+		    func.check2NF();
+		    System.out.println("The highest normal form of this relation is :"+globalVariables.maxNF+" at index "+globalVariables.maxNFindex);
+		    switch(globalVariables.maxNF)
+		    {
+		        case 1: func.decompose2NF();
+		                break;
+		        case 2: func.decompose3NF(globalVariables.maxNFindex);
+		                break;
+		        case 3: func.decomposeBCNF(globalVariables.maxNFindex);
+		                break;
+		        default:System.out.println("The relation is already in BCNF form."); 
+		                break;
+
+		    }
+		}
 	}// End of Main program    
 }// End of module 1
