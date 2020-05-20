@@ -3,6 +3,7 @@ import java.io.*;
 import java.lang.*;
 import java.awt.*;
 
+// All Global variables defined in global variables class.
 class globalVariables
 {
 	public static Vector dependencies0 = new Vector();
@@ -15,17 +16,14 @@ class globalVariables
 	public static Vector<String> fdstring = new Vector<String>();
 	public static char[] input = new char[10];
 	public static String fdep = new String();
-	//public static Vector<Vector<Integer>> v = new Vector<Vector<Integer>>();
-	//public static Vector<Vector<Integer>> vi = new Vector<Vector<Integer>>();
 	public static Vector<Integer> candidateKeys = new Vector();
-	//public static Vector vec = new Vector();
 	public static int location;
 }
-
-
+// class Containing all Methods
 class functions
 {
 public
+	/* Method to check if str2 is a substring of str1 */
 	static int substring( String s1, String s2)
 	{
 	    int l1=s1.length();
@@ -34,22 +32,19 @@ public
 	    {
 	        flag=0;
 	        for(j=0;j<l1;j++)
-	        {
-	        
+	        {	        
 	            if(s1.charAt(j)==s2.charAt(i))
 	            {
 	                flag++;
 	                break;
-	            }
-	            
+	            }	            
 	        }
 	        if(flag==0)
 	            return 0;
 	    }
 	    return 1;
-
 	}
-
+	/* Method to create candidate key, incase the inputs by user don't have any */
 	static void createCandidateKey()
 	{
 	    int i,j,z,index=0,maxsize=0,sz;
@@ -61,18 +56,15 @@ public
 	        if(sz>maxsize)
 	        {
 	            index=i;
-	            maxsize=sz;
-	            
+	            maxsize=sz;	            
 	        }
-	    }
-	    //System.out.println("maxsize = " + maxsize + " at index " + index);
+	    }	    
 	    for(i=0;i< globalVariables.n;i++)
 	        leftOut[i]=0;
 	    for(i=0;i<maxsize;i++)
 	    {
 	    	j=(int)((Vector)globalVariables.dependencies1.get(index)).get(i);
-	        leftOut[j]++;
-	        //System.out.println("included = " + j);
+	        leftOut[j]++;	        
 	    }
 	    char[] cKey = new char[globalVariables.n];    
 	    z=(int)(((String)globalVariables.fdstring.get(index)).length());
@@ -80,8 +72,7 @@ public
 	    {
 	    	if(globalVariables.fdstring.get(index).charAt(i)>='A' && globalVariables.fdstring.get(index).charAt(i) <='Z')
 	    	{
-		    	cKey[i]=globalVariables.fdstring.get(index).charAt(i);
-		    	//System.out.println("i = " +i + "z = " + z + " char = " + globalVariables.fdstring.get(index).charAt(i));
+		    	cKey[i]=globalVariables.fdstring.get(index).charAt(i);		    	
 	    	}
 	    	else break;
 	    }
@@ -106,7 +97,10 @@ public
 	    globalVariables.dependencies1.add(temp);
 	    globalVariables.candidateKeys.add(z);
 	}
-
+	/* If maxNF=1, then we remove partial dependency using this method, by decomposing the relation.
+	 * Algo: If AB is CK, then separate out attributes which have either A or B as super key.
+	 * Push them in a new relation alonf with their superkey
+	 */
 	static void decompose2NF()
 	{
 	    int i,z,j,index,k,flag,length,l;
@@ -129,23 +123,19 @@ public
 	        if(l<length && globalVariables.dependencies1.get(j).size()>1)
 	        {
 	            if( substring(compareWith, globalVariables.fdstring.get(j))==1)
-	            {
-	                
+	            {	                
 	                for(k=0;k<((Vector)globalVariables.dependencies1.get(j)).size();k++)
-	                {
-	                	
+	                {	                	
 	                	int convert = (int)((Vector)globalVariables.dependencies1.get(j)).get(k);
 	                	decompose[k]=(char)(convert+65);
 	                }
 	                decompose[k]='\0';
 	                String decomposeStr = new String(decompose);
-	                decomposedRelations.add(decomposeStr);
-	                
+	                decomposedRelations.add(decomposeStr);	                
 	            }
 	        }
 	    }
 	    decompose=new char[20];
-	    //System.out.println("RELATION 0 "+ decomposedRelations);
 	    for(i=0;i< globalVariables.n;i++)
 	        leftOut[i]=0;
 	    z=decomposedRelations.size();
@@ -163,7 +153,6 @@ public
 	    for(i=0;i<length;i++)
 	    {
 	        decompose[i]=(globalVariables.fdstring.get(index)).charAt(i);
-	        //System.out.println("include = " + decompose[i]+ " " + length);
 	        leftOut[decompose[i]-'A']++;
 	    }
 	    for(j=0;j< globalVariables.n;j++)
@@ -181,6 +170,10 @@ public
 	    for(i=0;i<decomposedRelations.size();i++)
 	        System.out.println("Relation " + (i+1)+": "+ decomposedRelations.get(i));
 	}
+	/* If maxNF=2, then we remove transitive dependency using this method, by decomposing the relation.
+	 * Algo: If an attribute is transitively dependent on CK, remove it from the relation.
+	 * And push into a new relation where PK is its super key.
+	 */
 	static void decompose3NF(int maxNFindex)
 	{
 	    int i,z,j,index,k,flag,l;
@@ -198,13 +191,10 @@ public
 	    	int convert = (int)((Vector)globalVariables.inputDependency1.get(index)).get(i);
 	                	decompose[i]=(char)(convert+65);
 	        leftOut[convert]++;
-	        //System.out.println("i = "+i+" z= "+z+" convert= "+convert);
 	    }
-	    ///System.out.println("LEFTOUT 3 "+ leftOut[3] + decompose);
 	    decompose[i]='\0';
 	    String decomposeStr = new String(decompose);
 	        decomposedRelations.add(decomposeStr);	        
-	    //System.out.println("RELATION 0 "+ decomposedRelations);
 	    z=globalVariables.inputDependency1.size();
 	    for(i=0;i<z;i++)
 	    {
@@ -223,7 +213,6 @@ public
 		        }
 		        else break;
 	        }
-	        //System.out.println("leftOut " + leftOut);
 	        if(flag==0)
 	        {            
 	            for(k=0;k<globalVariables.inputDependency1.get(i).size();k++)
@@ -235,7 +224,6 @@ public
 
 	                    j++;
 	                    leftOut[convert]++;
-	                    //System.out.println("convert " + convert + "   k " + k + " decompose[j-1] "+ decompose[j-1]);
 	                }
 	            }
 	            decompose[j]='\0';
@@ -249,12 +237,13 @@ public
 	            }
 	        }
 	    }
-	    //System.out.println("RELATION 0 "+ decomposedRelations);
 	    System.out.println("After this decomposition, the relation satisfies 3NF");
 	    for(i=0;i<decomposedRelations.size();i++)
-	        System.out.println("Relation " + (i+1)+": "+ decomposedRelations.get(i));
-	
+	        System.out.println("Relation " + (i+1)+": "+ decomposedRelations.get(i));	
 	}
+	/* If maxNF=3, separate out all attributes which are dependent on anhy other attribute except the CK.
+	 * Push them along with their super key in another relation.
+	 */
 	static void decomposeBCNF(int maxNFindex)
 	{
 	    int i,j,z,k;
@@ -277,8 +266,7 @@ public
 	            }
 	            decompose[j]='\0';
 	            String decomposeStr = new String(decompose);
-	       		decomposedRelations.add(decomposeStr);
-	            
+	       		decomposedRelations.add(decomposeStr);	            
 	        }
 	    }
 	    i=globalVariables.maxNFindex;
@@ -300,7 +288,10 @@ public
 	    for(i=0;i<decomposedRelations.size();i++)
 	        System.out.println("Relation " + (i+1)+": "+ decomposedRelations.get(i));
 	}
-
+	/*
+	 * For all CKs that satisfy 3NF, check BCNF as the super key in each attribute should be the primary key.
+	 * Sets maxNF to 4 if LHS of all FDs is the primary key itself.
+	 */
 	static int checkBCNF(int candidateIndex)
 	{
 	    int i,z;
@@ -311,9 +302,12 @@ public
 	            return 0;
 	    }
 	    return 1;
-
 	}
-
+	/*
+	 * For all CKs that satisfy 2NF, we check for 3NF By comparing size of attributes' subkeys during input,
+	 * with the attributes' subkey sizes after considering transitive rules.
+	 * It sets maxNF to 3 if the comparision matches.
+	 */
 	static int check3NF(int candidateIndex)
 	{
 	    int z1,z2;
@@ -323,14 +317,12 @@ public
 	        return 1;
 	    else return 0;    
 	}
-
-
+	/* Method to set maxNF=2 if there exists a Candidate Key which has no partial dependency */
 	static void check2NF()
 	{
 	    int i,j,z,flag,length,l;
 	    z=globalVariables.candidateKeys.size();
 	    String compareWith;
-	    //System.out.println("size of candidateKeys " + z ); 
 	    for(i=0;i<z;i++)
 	    {
 	        flag=0;
@@ -346,7 +338,6 @@ public
 	        	l=0;
 	        	while((globalVariables.fdstring.get(j)).charAt(l)>='A' && (globalVariables.fdstring.get(j)).charAt(l)<= 'Z')
 	        		l++;
-	        	//System.out.println("l = " + l + "length = " + length + " "+ compareWith + " " + globalVariables.fdstring.get(j));
 	            if(l<length && globalVariables.dependencies1.get(j).size()>1)
 	            {
 
@@ -360,9 +351,7 @@ public
 	        if (flag==0)
 	        {
 	            globalVariables.nf=2;
-	            //System.out.println("NF at " + i +" " + globalVariables.nf );
 	            globalVariables.nf+=check3NF( globalVariables.candidateKeys.get(i));
-	            //System.out.println("NF after checking 3NF at " + i +" " + globalVariables.nf );
 	            if( globalVariables.nf==3)
 	            {
 	                globalVariables .nf+=checkBCNF( globalVariables.candidateKeys.get(i));
@@ -374,12 +363,15 @@ public
 	        }
 	        if(globalVariables.maxNF==4)
 	            break;
-	    }
-	    
+	    }	    
 	}
-
-
-	// Visit function
+	/*
+	 * Visit function:
+	 * This Method has been used to find the derivable attributes from different attributes based on the rules.
+	 * Algo: We use graph traversal algorithm (Breadth First Algorithm) for each super key of functional dependency.
+	 * * If a key is ABD, the keys A,B,D are individually marked true in visited[ABD].
+	 * * The final result is stored in a vector of vectors, as well as a 2-D bool array- visited.
+	 */
 	static void visit(int i, int j, int[][] visited)
 	{
 	    int z=0,value,index=0,l,present,k;
@@ -392,7 +384,6 @@ public
 	            z=globalVariables.dependencies1.get(k).size();
 	            break;
 	        }
-
 	    }
 	    for(k=0;k<z;k++)
 	    {
@@ -410,10 +401,20 @@ public
 	    }
 	}
 }
+	/*
+	 * Exception Handling:
+	 * The following Exceptions are being handled by our code.
+	 * * No. of attributes <=1 or >=26
+	 * * No. of functional dependencies <0 or >=1000
+	 * * Mismatch of Input type
+	 * * Wrong input format of functional dependencies
+	 * * Wrong/undefined attribute names being given as input in functional dependencies.
+	 * * Inputs with same value on LHS and RHS, eg: A>A
+	 */
 
 class HighInputExcetion extends Exception
 {
-   int maxInputValue = 26, minInputValue = 0;
+   int maxInputValue = 26, minInputValue = 1;
    HighInputExcetion( int mx, int mn) 
    {
 	maxInputValue = mx;
@@ -430,7 +431,7 @@ class WrongInputFormatException extends Exception
 	return (str);
    }
 }
-
+// Module1 main class starts:
 public class Module1
 {
 	public static void main(String[] args) 
@@ -462,20 +463,12 @@ public class Module1
 	        globalVariables.input[0]=ch;
 	        String inputStr = new String(globalVariables.input);
 	        globalVariables.fdstring.add(inputStr);
-	        //System.out.println(inputStr +" " + globalVariables.fdstring.get(i));
-	        //globalVariables.v.add(i);
 	        globalVariables.dependencies0.add(i);
 	        globalVariables.inputDependency0.add(i);
-
-	        // v.add([i]);
-	        // vi.add([i]);
 	        globalVariables.dependencies1.add(i,new Vector<Integer>());
 	        globalVariables.dependencies1.get(i).add(i);
-	        //System.out.println(globalVariables.dependencies1.get(i));
 	        globalVariables.inputDependency1.add(i,new Vector<Integer>());
-	        globalVariables.inputDependency1.get(i).add(i);
-	        //globalVariables.v.remove(0);
-
+	        globalVariables.inputDependency1.get(i).add(i);	        
 	    }
 	    
 	    System.out.println("\nEnter the no. of functional globalVariables.dependencies");
@@ -491,13 +484,10 @@ public class Module1
 			System.exit(0);
 		}
 	    
-	    //System.out.println("FD " +globalVariables.fd);
 	    System.out.println("Now enter the functional globalVariables.dependencies in format X>Y");
 	    globalVariables.fdep = scan.nextLine();
 	    for(i=0;i<globalVariables.fd;i++)
-	    {
-	        
-	        
+	    {	        
 	        try
 			{
 				globalVariables.fdep = scan.nextLine();
@@ -513,9 +503,7 @@ public class Module1
 					}
 					else if(globalVariables.fdep.charAt(j)!='>')
 						throw new WrongInputFormatException();
-				}
-
-				
+				}				
 			}
 			catch(Exception e)
 			{
@@ -528,7 +516,7 @@ public class Module1
 	            globalVariables.input[j]=globalVariables.fdep.charAt(j);
 	        }
 	        globalVariables.input[j]='\0';
-	        //System.out.println("length " + globalVariables.length + " " + globalVariables.fdep);
+	        
 	        globalVariables.location=(int)(globalVariables.fdep.charAt(globalVariables.length-1)-'A');
 	        flag=0;
 	        String inputStr = new String(globalVariables.input);
@@ -539,12 +527,10 @@ public class Module1
 	            
 		            if(globalVariables.fdstring.get(j).equals(inputStr))
 		            {
-		            	//System.out.println(inputStr +" " + globalVariables.fdstring.get(j)+ " " +globalVariables.location);
 		            	if(j==globalVariables.location)
 		            		throw new WrongInputFormatException();
 		                globalVariables.dependencies1.get(j).add(globalVariables.location);
 		                globalVariables.inputDependency1.get(j).add(globalVariables.location);
-		                //System.out.println(j+" "+ globalVariables.dependencies1.get(j));
 		                flag++;
 		                break;
 		            }
@@ -553,13 +539,11 @@ public class Module1
 				{
 					System.out.println("Exception found... \n Exception type: <"+ e +">\n Exiting Process... Run Again with correct input");
 					System.exit(0);
-				}   
-	           
+				}	           
 	        }
 	            
 	        if(flag==0)
 	        {
-	        	//System.out.println("location" + globalVariables.location);
 	        	inputStr = new String(globalVariables.input);
 	            globalVariables.fdstring.add(inputStr);
 	            globalVariables.dependencies0.add(j);
@@ -570,16 +554,13 @@ public class Module1
 	            globalVariables.inputDependency1.get(j).add(globalVariables.location);
 	            for(k=0;k<globalVariables.length-2;k++)
 	            {
-	            	//System.out.println("LENGTH = " + globalVariables.length);
 	                globalVariables.dependencies1.get(j).add(globalVariables.fdep.charAt(k)-'A');
 	                globalVariables.inputDependency1.get(j).add(globalVariables.fdep.charAt(k)-'A');
-
 	            }           
 	        }
 	    }
 	    
 	    globalVariables.fd=globalVariables.dependencies0.size();
-	    //System.out.println("FD " +globalVariables.fd);
 	    
 	    for(i=0;i<globalVariables.fd;i++)
 	    {	    	
@@ -599,12 +580,10 @@ public class Module1
 	    for(i=0;i<globalVariables.fd;i++)
 	    
 	    {
-	    	//System.out.println(i+" inputDependency1 "+ globalVariables.inputDependency1.get(i));
 	        System.out.print("\n"+ globalVariables.fdstring.get(i) + "-> ");
 	        int z=globalVariables.dependencies1.get(i).size();
 	        if(z==globalVariables.n)
-	            globalVariables.candidateKeys.add(i);
-	        
+	            globalVariables.candidateKeys.add(i);	        
 	        for(j=0;j<z;j++)
 	        {
 	            System.out.print(  globalVariables.fdstring.get((globalVariables.dependencies1.get(i)).get(j)) + " ");
@@ -635,5 +614,5 @@ public class Module1
 	                break;
 
 	    }
-	}    
-}
+	}// End of Main program    
+}// End of module 1
